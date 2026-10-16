@@ -1,12 +1,10 @@
 import torch
 from torch import nn
-from torch.nn.modules import transformer
 
 from cs336_basics.embedding import embedding
 from cs336_basics.linear import Linear
 from cs336_basics.pre_norm_transformer import pre_norm_transformer
 from cs336_basics.rmsnorm import RMSNorm
-from cs336_basics.softmax import softmax
 
 
 class transformer_lm(nn.Module):
@@ -35,7 +33,9 @@ class transformer_lm(nn.Module):
         self.embedding_block = embedding(vocab_size, d_model, device=self.device)
         self.pre_norm_transformer_block = nn.ModuleList(
             [
-                pre_norm_transformer(d_model, num_heads, d_ff, context_length, theta, device=self.device)
+                pre_norm_transformer(
+                    d_model, num_heads, d_ff, context_length, theta, device=self.device
+                )
                 for _ in range(self.num_layers)
             ]
         )

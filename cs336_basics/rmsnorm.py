@@ -7,16 +7,8 @@ class RMSNorm(nn.Module):
         super().__init__()
 
         self.d_model = d_model
-        # modle hidden num of dims
 
         self.eps = float(eps)
-
-        # We do not need write like: torch.tensor(eps)
-        # because When `eps` is used as a Python float in CUDA tensor operations,
-        #  there is absolutely no need to "move it to the GPU."
-        # PyTorch handles such scalar constants directly as kernel arguments,
-        #  without allocating dedicated GPU memory for them.
-        # Epsilon value for numerical stability
 
         self.device = device
         self.dtype = dtype
