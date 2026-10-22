@@ -13,6 +13,7 @@ class pre_norm_transformer(nn.Module):
         context_length: int,
         theta: float,
         device: torch.device | None = None,
+        dtype: torch.dtype | None = None,
     ) -> None:
 
         super().__init__()
@@ -22,13 +23,21 @@ class pre_norm_transformer(nn.Module):
         self.context_length = context_length
         self.theta = theta
         self.device = device
+        self.dtype = dtype
 
-        self.norm_block_1 = rmsnorm.RMSNorm(d_model, device=self.device)
-        self.norm_block_2 = rmsnorm.RMSNorm(d_model, device=self.device)
+        self.norm_block_1 = rmsnorm.RMSNorm(d_model, device=self.device, dtype=self.dtype)
+        self.norm_block_2 = rmsnorm.RMSNorm(d_model, device=self.device, dtype=self.dtype)
         self.attention_block = attention.multihead_self_attention(
-            self.d_model, self.num_heads, self.theta, context_length, device=self.device
+            self.d_model,
+            self.num_heads,
+            self.theta,
+            context_length,
+            device=self.device,
+            dtype=self.dtype,
         )
-        self.swiglu_block = swiglu.positionwise_feedward(d_model, d_ff, device=self.device)
+        self.swiglu_block = swiglu.positionwise_feedward(
+            d_model, d_ff, device=self.device, dtype=self.dtype
+        )
 
     def forward(self, input_feature: torch.Tensor) -> torch.Tensor:
         token_position = torch.arange(input_feature.shape[-2], device=self.device)

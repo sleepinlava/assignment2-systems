@@ -4,13 +4,21 @@ from torch import nn
 
 
 class RotaryPositionalEmbedding(nn.Module):
-    def __init__(self, theta: float, d_k: int, max_seq_len: int, device: torch.device | None = None) -> None:
+    def __init__(
+        self,
+        theta: float,
+        d_k: int,
+        max_seq_len: int,
+        device: torch.device | None = None,
+        dtype: torch.dtype | None = None,
+    ) -> None:
         super().__init__()
 
         self.theta = theta
         self.d_k = d_k
         self.max_seq_len = max_seq_len
         self.device = device
+        self.dtype = dtype
 
         # 1. 计算逆频率 inv_freq
         # 公式: theta_i = theta^(-2i / d_k), i 属于 [0, d_k/2)
@@ -19,7 +27,9 @@ class RotaryPositionalEmbedding(nn.Module):
 
         # 计算位置position
         # torch.arange(n) = range(n)
-        m = torch.arange(max_seq_len, device=self.device, dtype=torch.float32)  # shape = (max_seq_len, )
+        m = torch.arange(
+            max_seq_len, device=self.device, dtype=torch.float32
+        )  # shape = (max_seq_len, )
 
         # 得到全量矩阵
         freqs_matrix = torch.outer(m, inv_freq)  # shape = (inv_freq, m)
@@ -32,6 +42,9 @@ class RotaryPositionalEmbedding(nn.Module):
 
         if self.device is not None:
             self.to(device)
+
+        if self.dtype is not None:
+            self.to(dtype)
 
     def forward(self, x: torch.Tensor, token_positions: torch.Tensor) -> torch.Tensor:
         """arXiv:2104.09864v5 [cs.CL] 8 Nov 2023中的旋转矩阵高效实现方法实现，具体实现公式见论文"""

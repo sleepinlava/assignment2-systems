@@ -18,6 +18,7 @@ class transformer_lm(nn.Module):
         d_ff: int,
         theta: float,
         device: torch.device | None = None,
+        dtype: torch.dtype | None = None,
     ) -> None:
         super().__init__()
 
@@ -29,18 +30,25 @@ class transformer_lm(nn.Module):
         self.d_ff = d_ff
         self.theta = theta
         self.device = device
+        self.dtype = dtype
 
-        self.embedding_block = embedding(vocab_size, d_model, device=self.device)
+        self.embedding_block = embedding(vocab_size, d_model, device=self.device, dtype=self.dtype)
         self.pre_norm_transformer_block = nn.ModuleList(
             [
                 pre_norm_transformer(
-                    d_model, num_heads, d_ff, context_length, theta, device=self.device
+                    d_model,
+                    num_heads,
+                    d_ff,
+                    context_length,
+                    theta,
+                    device=self.device,
+                    dtype=self.dtype,
                 )
                 for _ in range(self.num_layers)
             ]
         )
-        self.norm_block = RMSNorm(d_model, device=self.device)
-        self.mlp_block = Linear(d_model, vocab_size, device)
+        self.norm_block = RMSNorm(d_model, device=self.device, dtype=self.dtype)
+        self.mlp_block = Linear(d_model, vocab_size, device, self.dtype)
 
     def forward(self, input_tesor) -> torch.Tensor:
         transformer_tensor = self.embedding_block.forward(input_tesor)

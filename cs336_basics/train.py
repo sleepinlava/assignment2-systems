@@ -194,9 +194,9 @@ if __name__ == "__main__":
     # print(evaluate_fn(model, ))
 
     full_train(
-        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/cs336_basics/test.bin",
-        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/cs336_basics/vaild.bin",
-        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/cs336_basics/test.pth",
+        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/checkpoints/test.bin",
+        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/checkpoints/vaild.bin",
+        "/home/sleepinlava/Projects/python/cs336/assignment1-basics/checkpoints/test.pth",
         5000,
         model,
         hyper_params,

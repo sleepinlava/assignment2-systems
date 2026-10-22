@@ -13,7 +13,7 @@ class RMSNorm(nn.Module):
         self.device = device
         self.dtype = dtype
         self.device = device
-        self.weight = nn.Parameter(torch.ones(self.d_model, device=self.device))
+        self.weight = nn.Parameter(torch.ones(self.d_model, device=self.device, dtype=self.dtype))
 
     def rms(self, x: torch.Tensor) -> torch.Tensor:
         in_dtype = x.dtype

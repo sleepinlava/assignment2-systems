@@ -15,16 +15,17 @@ class positionwise_feedward(nn.Module):
         d_model: int,
         d_ff: int,
         device: torch.device | None = None,
-        dtype: torch.device | None = None,
+        dtype: torch.dtype | None = None,
     ) -> None:
         super().__init__()
         self.d_model = d_model
         self.d_ff = d_ff
         self.device = device
+        self.dtype = dtype
 
-        self.weight_1 = linear.Linear(d_model, d_ff, device)
-        self.weight_2 = linear.Linear(d_ff, d_model, device)
-        self.weight_3 = linear.Linear(d_model, d_ff, device)
+        self.weight_1 = linear.Linear(d_model, d_ff, device, dtype)
+        self.weight_2 = linear.Linear(d_ff, d_model, device, dtype)
+        self.weight_3 = linear.Linear(d_model, d_ff, device, dtype)
 
     def silu(self, x: torch.Tensor) -> torch.Tensor:
         """x/(1 + exp(x))"""
